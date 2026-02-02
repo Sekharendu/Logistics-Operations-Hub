@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+header{
+  background-color: rgb(18, 18, 96);
+  color:whitesmoke;
+  display:flex;
+  justify-content: space-between;
+  
+}
+.order-details{
+  display: flex;
+}
+.user-details{
+  display: flex;
+  justify-content: space-evenly;
+}
+.next-actions{
+  display: flex;
+  justify-content: space-evenly;
+}
+/* .hidden{
+  display: none;
+} */
+img{
+  max-width: 10rem;
+}
