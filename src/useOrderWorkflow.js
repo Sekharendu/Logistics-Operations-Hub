@@ -18,14 +18,29 @@ const VALID_TRANSITIONS={
     "CANCELLED": []
 }
 
-
 export const reducer=(state,action)=>{
     switch(action.type){
         case "STATUS_CHANGE":
             if(VALID_TRANSITIONS[state.status].includes(action.payload))
-            return({...state,
-                status: action.payload,
-                button: VALID_TRANSITIONS[action.payload]});
+            {
+                return(
+                    {...state,
+                    status: action.payload,
+                    button: VALID_TRANSITIONS[action.payload],
+                    history: [
+                                ...state.history,
+                                { 
+                                time: new Date().toLocaleTimeString(), 
+                                note: `Status updated to ${action.payload}`,
+                                type: "USER" 
+                                }
+                            ]
+                    }
+                );
+            }
+            return state;
         default:
+            return state;
     }
+
 }

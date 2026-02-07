@@ -1,53 +1,98 @@
-import { useState } from 'react'
 import './App.css'
-// import NextActions from './NextActions'
 import logo from './assets/logo.png'
 import { useReducer } from 'react';
 import { initialOrderState , reducer } from './useOrderWorkflow.js'
-
+import { useState } from 'react'
 function App() {
 
-  let timeNow=new Date().toLocaleTimeString();
+  // let timeNow=new Date().toLocaleTimeString();
   const today=new Date();
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const dayOfWeek=days[today.getDay()];
+  const [timeNow, setTimeNow] = useState(new Date().toLocaleTimeString());
+
+// This updates the clock every second
+setInterval(() => {
+  setTimeNow(new Date().toLocaleTimeString());
+}, 1000);
 
   const [state, dispatch] = useReducer(reducer, initialOrderState);
+  
   return (
-    <>
+    <div className="app-container">
+
       <header>
-        <img src={logo} alt="Logo" />
-        <h3>Logistics Operation Hub</h3>
-        <h3>{dayOfWeek} {timeNow}</h3>
+        <div className="logo-area">
+          {/* Text-based Logo instead of Image */}
+          <div className="brand-mark">
+            <span className="brand-main">Fleet</span>
+            <span className="brand-accent">Flow</span>
+          </div>
+          <span className="hub-title">Operations Hub</span>
+        </div>
+        <div className="header-info">
+          <span className="day-tag">{dayOfWeek}</span>
+          <span className="time-tag">{timeNow}</span>
+        </div>
       </header>
+
       <main>
-        <section className='order-details'>
-          <h1>{state.orderId}</h1>
-           <h2>Status:{state.status}</h2>
+        {/* 2. Top Card: Order Identity & Status */}
+        <section className="card order-header">
+          <div className="order-id-group">
+            <label className="field-label">ORDER ID</label>
+            <h1 className="order-number">{state.orderId}</h1>
+          </div>
+          <span className={`status-badge status-${state.status.toLowerCase()}`}>
+            {state.status}
+          </span>        
         </section>
-        <section className='user-details'>
-         <h2>Customer: {state.customer}</h2>
-         <h2>Destination: {state.destination}</h2>
-         <h2>Location: {state.location}</h2>
+
+        {/* 3. Middle Card: User & Shipping Details */}
+        <section className="card details-grid">
+          <div className="detail-item">
+            <label className="field-label">Customer</label>
+            <p className="field-value">{state.customer}</p>
+          </div>
+          <div className="detail-item">
+            <label className="field-label">Location</label>
+            <p className="field-value">{state.location}</p>
+          </div>
+          <div className="detail-item">
+            <label className="field-label">Destination</label>
+            <p className="field-value">{state.destination}</p>
+          </div>
         </section>
-        <section className='next-actions flex gap-4 mt-6'>
+
+        {/* 4. Action Buttons (No Card for these, keep them floating) */}
+        <section className="next-actions">
           {state.button.map((btnName) => (
             <button 
               key={btnName} 
+              className="btn"
               onClick={() => dispatch({ type: 'STATUS_CHANGE', payload: btnName })}
-              className="bg-slate-800 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-600 transition-all"
             >
               {btnName}
             </button>
           ))}
         </section>
-        {/* <NextActions></NextActions>
-        <OrderDetails></OrderDetails>
-        <History></History> */}
-      </main>
 
-    </>
-  )
+        {/* 5. Bottom Card: The Activity Log / Timeline */}
+        <section className="card history-container">
+          <h3 className="section-title">Activity Log</h3>
+          <div className="history-list">
+            {state.history.map((entry, index) => (
+              <div key={index} className="history-item">
+                <div className="history-time">{entry.time}</div>
+                <div className="history-note">{entry.note}</div>
+                <div className="history-type">{entry.type}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
+  );
 }
 
 export default App
