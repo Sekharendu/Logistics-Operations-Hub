@@ -78,9 +78,14 @@ header {
 
 /* 3. MAIN LAYOUT & CARDS */
 main {
-  max-width: 900px;
-  margin: 2.5rem auto;
-  padding: 0 1.5rem;
+  display: flex;
+  max-width: 100%;
+  margin-bottom: 2.5rem auto;
+  /* padding: 0 1.5rem; */
+}
+aside {
+  background: var(--primary);
+  color: white;
 }
 
 .card {

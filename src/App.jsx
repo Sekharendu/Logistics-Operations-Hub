@@ -17,7 +17,7 @@ setInterval(() => {
 }, 1000);
 
   const [state, dispatch] = useReducer(reducer, initialOrderState);
-  
+  let currentState=state.orders.find((inst)=>inst.id===state.activeId);
   return (
     <div className="app-container">
 
@@ -37,14 +37,23 @@ setInterval(() => {
       </header>
 
       <main>
+      <aside>
+        <h2>Active Shipments</h2>
+        <ul>
+          {state.orders.map((inst)=>{
+            return <li key={inst.id} className={inst.orderId} onClick={()=>dispatch({type:"SCREEN_UPDATE" , payload:inst.id})}>{inst.orderId}</li>
+          })}
+        </ul>
+      </aside>
+      <div className='customer info'>
         {/* 2. Top Card: Order Identity & Status */}
         <section className="card order-header">
           <div className="order-id-group">
             <label className="field-label">ORDER ID</label>
-            <h1 className="order-number">{state.orderId}</h1>
+            <h1 className="order-number">{currentState.orderId}</h1>
           </div>
-          <span className={`status-badge status-${state.status.toLowerCase()}`}>
-            {state.status}
+          <span className={`status-badge status-${currentState.status.toLowerCase()}`}>
+            {currentState.status}
           </span>        
         </section>
 
@@ -52,21 +61,21 @@ setInterval(() => {
         <section className="card details-grid">
           <div className="detail-item">
             <label className="field-label">Customer</label>
-            <p className="field-value">{state.customer}</p>
+            <p className="field-value">{currentState.customer}</p>
           </div>
           <div className="detail-item">
             <label className="field-label">Location</label>
-            <p className="field-value">{state.location}</p>
+            <p className="field-value">{currentState.location}</p>
           </div>
           <div className="detail-item">
             <label className="field-label">Destination</label>
-            <p className="field-value">{state.destination}</p>
+            <p className="field-value">{currentState.destination}</p>
           </div>
         </section>
 
         {/* 4. Action Buttons (No Card for these, keep them floating) */}
         <section className="next-actions">
-          {state.button.map((btnName) => (
+          {currentState.button.map((btnName) => (
             <button 
               key={btnName} 
               className="btn"
@@ -81,7 +90,7 @@ setInterval(() => {
         <section className="card history-container">
           <h3 className="section-title">Activity Log</h3>
           <div className="history-list">
-            {state.history.map((entry, index) => (
+            {currentState.history.map((entry, index) => (
               <div key={index} className="history-item">
                 <div className="history-time">{entry.time}</div>
                 <div className="history-note">{entry.note}</div>
@@ -90,6 +99,9 @@ setInterval(() => {
             ))}
           </div>
         </section>
+
+      </div>
+
       </main>
     </div>
   );
