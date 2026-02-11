@@ -14,6 +14,32 @@ body {
   margin: 0;
 }
 
+/* DARK THEME */
+[data-theme='dark'] {
+  --primary: #1e293b;
+  --accent: #60a5fa;
+  --bg: #0f172a;       /* Deep Navy Background */
+  --card: #1e293b;     /* Slightly lighter navy for cards */
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: #334155;
+}
+.theme-toggle {
+  background: #334155;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background 0.2s;
+}
+
+.theme-toggle:hover {
+  background: var(--accent);
+}
 header {
 
   background: var(--primary);
@@ -141,11 +167,12 @@ header {
 
 .sidebar {
   width: 300px;
-  background: white;
+  background: var(--card); /* Change from 'white' to var(--card) */
   border-radius: 12px;
   border: 1px solid var(--border);
   padding: 20px;
   height: fit-content;
+  color: var(--text-main); /* Added to ensure text is visible */
 }
 
 .sidebar h2 {
@@ -167,11 +194,54 @@ header {
   flex-direction: column;
 }
 
-.sidebar-item:hover { background: #f8fafc; }
-
+/* .sidebar-item:hover { background: #f8fafc; } */
+/* 
 .sidebar-item.active {
   background: #eff6ff;
   border-color: var(--accent);
+} */
+
+/* Update these specific selectors in your App.css */
+
+.sidebar-item.active {
+  /* Use a subtle, dark blue background instead of light blue/white */
+  background: rgba(59, 130, 246, 0.15); 
+  border-color: var(--accent);
+  box-shadow: inset 0 0 10px rgba(59, 130, 246, 0.1);
+}
+
+/* Ensure the text stays bright and readable in Dark Mode */
+[data-theme='dark'] .sidebar-item.active .sidebar-id {
+  color: #60a5fa; /* Brighter blue for the ID */
+}
+
+[data-theme='dark'] .sidebar-item.active .sidebar-customer {
+  color: #e2e8f0; /* Near-white for the Name */
+}
+
+/* Add a small 'active' indicator bar on the left */
+.sidebar-item.active {
+  position: relative;
+  padding-left: 20px; /* Make room for the indicator */
+}
+
+.sidebar-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 4px;
+  background: var(--accent);
+  border-radius: 0 4px 4px 0;
+}
+.sidebar-item:hover { 
+  background: var(--bg); /* Uses the slightly different bg color */
+}
+
+.sidebar-id { 
+  font-weight: 800; 
+  color: var(--text-main); /* Use variable instead of primary */
 }
 
 .sidebar-id { font-weight: 800; color: var(--primary); }
@@ -180,12 +250,14 @@ header {
 .customer-info { flex: 1; } /* Takes up remaining space */
 
 /* CARD STYLING */
+
 .card {
-  background: white;
+  background: var(--card); /* Change from 'white' to var(--card) */
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 20px;
   border: 1px solid var(--border);
+  color: var(--text-main); /* Ensure card text adapts to theme */
 }
 
 .order-header { display: flex; justify-content: space-between; align-items: center; }
@@ -294,7 +366,7 @@ header {
 
 .history-note { font-weight: 500; margin: 4px 0; }
 
-.history-type {
+/* .history-type {
 
   font-size: 10px;
 
@@ -308,10 +380,96 @@ header {
 
   color: var(--text-muted);
 
+} */
+.history-type {
+  font-size: 10px;
+  font-weight: 800;
+  background: var(--bg); /* Adapts to theme */
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text-muted);
 }
 .next-actions{
   margin-bottom: 1.48rem;
 }
 .section-title{
   margin-top: 0rem;
+}
+
+
+/* Container for label and switch */
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 15px;
+}
+
+.mode-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+/* The actual switch container */
+.theme-switch {
+  display: inline-block;
+  height: 24px;
+  position: relative;
+  width: 50px;
+}
+
+.theme-switch input {
+  display: none; /* Hide the default checkbox */
+}
+
+/* The slider background */
+.slider {
+  background-color: #334155;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+/* The sliding circle */
+.slider:before {
+  background-color: #fff;
+  bottom: 3px;
+  content: "";
+  height: 18px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 18px;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+/* When checked: change background color */
+input:checked + .slider {
+  background-color: var(--accent);
+}
+
+/* When checked: move the circle to the right */
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+/* The Icon inside the slider */
+.slider .icon {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 12px;
+  transition: .4s;
+}
+
+input:checked + .slider .icon {
+  right: 30px; /* Move icon along with the slider */
 }
