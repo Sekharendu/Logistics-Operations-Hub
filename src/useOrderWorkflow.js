@@ -54,8 +54,8 @@ const VALID_TRANSITIONS={
 export const reducer=(state,action)=>{
     switch(action.type){
         case "STATUS_CHANGE":
-            const updateOrder=state.orders.map((inst)=>{
-                if(state.activeId==inst.id && VALID_TRANSITIONS[order.status].includes(action.payload)){
+            const updatedOrders=state.orders.map((order)=>{
+                if(state.activeId==order.id && VALID_TRANSITIONS[order.status].includes(action.payload)){
                     return {
                         ...order,
                         status: action.payload,
