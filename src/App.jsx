@@ -17,6 +17,16 @@ function App() {
   }, []);
 
   const [state, dispatch] = useReducer(reducer, initialOrderState);
+  const [theme, setTheme] = useState('light');
+
+// Whenever the theme changes, update the 'data-theme' attribute on the <html> tag
+useEffect(() => {
+  document.documentElement.setAttribute('data-theme', theme);
+}, [theme]);
+
+const toggleTheme = () => {
+  setTheme(prev => prev === 'light' ? 'dark' : 'light');
+};
   
   // This finds the data for the order you clicked in the sidebar
   let currentState = state.orders.find((inst) => inst.id === state.activeId);
@@ -32,6 +42,20 @@ function App() {
           <span className="hub-title">Operations Hub</span>
         </div>
         <div className="header-info">
+          <div className="theme-switch-wrapper">
+            <span className="mode-label">{theme === 'light' ? 'Light' : 'Dark'}</span>
+            <label className="theme-switch">
+              <input 
+                type="checkbox" 
+                onChange={toggleTheme} 
+                checked={theme === 'dark'} 
+              />
+              <div className="slider round">
+                <span className="icon">{theme === 'light' ? '☀️' : '🌙'}</span>
+              </div>
+            </label>
+          </div>
+          
           <span className="day-tag">{dayOfWeek}</span>
           <span className="time-tag">{timeNow}</span>
         </div>
