@@ -2,12 +2,22 @@ import './App.css'
 import { useReducer, useState, useEffect } from 'react';
 import { initialOrderState, reducer } from './useOrderWorkflow.js'
 
+const savedData = localStorage.getItem('fleetFlowData');
+
+// 2. If it exists, we parse it back into an object; if not, we use the default
+const persistedState = savedData ? JSON.parse(savedData) : initialOrderState;
+
 function App() {
+
+  const [state, dispatch] = useReducer(reducer, persistedState);
+  const [theme, setTheme] = useState('light');
   const today = new Date();
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const dayOfWeek = days[today.getDay()];
   const [timeNow, setTimeNow] = useState(new Date().toLocaleTimeString());
 
+
+  // const [state, dispatch] = useReducer(reducer, persistedState);
   // Fixed Timer: useEffect is the 'SDE way' to handle intervals
   useEffect(() => {
     const timer = setInterval(() => {
@@ -16,8 +26,11 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
-  const [state, dispatch] = useReducer(reducer, initialOrderState);
-  const [theme, setTheme] = useState('light');
+  useEffect(() => {
+    const stateString = JSON.stringify(state);
+    localStorage.setItem('fleetFlowData', stateString);
+  }, [state]); 
+
 
 // Whenever the theme changes, update the 'data-theme' attribute on the <html> tag
 useEffect(() => {
@@ -117,6 +130,7 @@ const toggleTheme = () => {
                 {btnName}
               </button>
             ))}
+            <button className="btn reset-btn" onClick={() => dispatch({ type: 'RESET', payload:currentState.id})}>Reset</button>
           </section>
 
           {/* Bottom Card: Activity Log */}
