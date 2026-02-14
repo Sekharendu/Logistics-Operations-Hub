@@ -6,17 +6,22 @@ const savedData = localStorage.getItem('fleetFlowData');
 
 // 2. If it exists, we parse it back into an object; if not, we use the default
 const persistedState = savedData ? JSON.parse(savedData) : initialOrderState;
+let savedTheme= localStorage.getItem('fleetFlowTheme');
 
 function App() {
-
   const [state, dispatch] = useReducer(reducer, persistedState);
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(savedTheme || 'light');
   const today = new Date();
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const dayOfWeek = days[today.getDay()];
   const [timeNow, setTimeNow] = useState(new Date().toLocaleTimeString());
 
-
+  // useEffect(()=>{
+  //   const themeString = localStorage.getItem('fleetFlowTheme');
+  //   if(themeString){
+  //     setTheme(themeString);
+  //   }
+  // });
   // const [state, dispatch] = useReducer(reducer, persistedState);
   // Fixed Timer: useEffect is the 'SDE way' to handle intervals
   useEffect(() => {
@@ -35,6 +40,7 @@ function App() {
 // Whenever the theme changes, update the 'data-theme' attribute on the <html> tag
 useEffect(() => {
   document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('fleetFlowTheme', theme);
 }, [theme]);
 
 const toggleTheme = () => {
@@ -130,7 +136,7 @@ const toggleTheme = () => {
                 {btnName}
               </button>
             ))}
-            <button className="btn reset-btn" onClick={() => dispatch({ type: 'RESET', payload:currentState.id})}>Reset</button>
+            <button className="btn reset-btn" onClick={() => dispatch({ type: 'RESET', payload:currentState?.id})}>RESET</button>
           </section>
 
           {/* Bottom Card: Activity Log */}
