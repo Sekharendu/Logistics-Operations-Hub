@@ -71,6 +71,33 @@ export const reducer=(state,action)=>{
                 ...state,
                 activeId: action.payload
             };
+        case "RESET":
+            const resetOrder=state.orders.map((order)=>{
+                if(order.id===action.payload){
+                    return {
+                            ...order,
+                            status: 'PENDING',
+                            button: VALID_TRANSITIONS['PENDING'],
+                            history: [...order.history, {time:new Date().toLocaleTimeString(), note: "Order reset to PENDING", type: "USER"}]
+                        }
+                }
+                return order;
+                
+            });
+            return { ...state, orders: resetOrder };
+            // find(order=>order.id===action.payload);
+            // if(resetOrder){
+            //     return {
+            //         ...state, orders: state.orders.map(order => {
+            //             if(order.id===action.payload){
+            //                 return {
+
+            //                 }
+            //             }
+            //             return order;
+            //         })
+            //     }
+            // }
         default:
             return state;
     }
