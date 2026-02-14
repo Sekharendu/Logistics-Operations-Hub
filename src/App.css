@@ -244,7 +244,7 @@ header {
   color: var(--text-main); /* Use variable instead of primary */
 }
 
-.sidebar-id { font-weight: 800; color: var(--primary); }
+/* .sidebar-id { font-weight: 800; color: var(--primary); } */
 .sidebar-customer { font-size: 0.85rem; color: var(--text-muted); }
 
 .customer-info { flex: 1; } /* Takes up remaining space */
@@ -472,4 +472,9 @@ input:checked + .slider:before {
 
 input:checked + .slider .icon {
   right: 30px; /* Move icon along with the slider */
+}
+
+.reset-btn:hover {
+  background: #fe0303;
+
 }
