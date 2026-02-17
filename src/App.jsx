@@ -46,9 +46,44 @@ useEffect(() => {
 const toggleTheme = () => {
   setTheme(prev => prev === 'light' ? 'dark' : 'light');
 };
-  
+  let pendingCount=0;
+  let inTransitCount=0;
+  let deliveredCount=0;
+  let dispatchCount=0;
+  let cancelledCount=0;
+  let totalShipmentCount=state.orders.length;
   // This finds the data for the order you clicked in the sidebar
   let currentState = state.orders.find((inst) => inst.id === state.activeId);
+  // for status tiles
+  state.orders.forEach((order)=>{
+    if(order.status==="PENDING"){
+      pendingCount++;
+    }
+    if(order.status==="IN_TRANSIT"){
+      inTransitCount++;
+    }
+    if(order.status==="DELIVERED"){
+      deliveredCount++;
+    } 
+    if(order.status==="DISPATCHED"){
+      dispatchCount++;
+    }
+    if(order.status==="CANCELLED"){
+      cancelledCount++;
+    }
+  })
+  // let searchFoundResult="";
+  const[searchFoundResult,setsearchFoundResult]=useState("");
+  // console.log("Current State:", currentState);
+  function handleChange(e){
+    console.log("Search Input:", e.target.value);
+    const searchValue = e.target.value;
+    const results = state.orders.filter(order => 
+        order.customer.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setsearchFoundResult(results);
+    
+  }
 
   return (
     <div className="app-container">
@@ -80,80 +115,122 @@ const toggleTheme = () => {
         </div>
       </header>
 
-      <main className="dashboard-layout">
-        <aside className="sidebar">
-          <h2>Active Shipments</h2>
-          <ul>
-            {state.orders.map((inst) => (
-              <li 
-                key={inst.id} 
-                className={`sidebar-item ${state.activeId === inst.id ? 'active' : ''}`} 
-                onClick={() => dispatch({ type: "SCREEN_UPDATE", payload: inst.id })}
-              >
-                <span className="sidebar-id">{inst.orderId}</span>
+      <main className="main-content">
+        <section className="status-layout" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 20px' }}>
+          <h1>Status Tiles</h1>
+          <div className="status-tiles-container">
+            <div className="total-shipment-tile">
+              <h4>Total Shipment</h4>
+              <h2>{totalShipmentCount}</h2>
+            </div>
+            <div className="pending-tile">
+              <h4>Pending</h4>
+              <h2>{pendingCount}</h2>
+            </div>
+            <div className='dispatched-tile'>
+              <h4>Dispatched</h4>
+              <h2>{dispatchCount}</h2>
+            </div>
+            <div className="in-transit-tile">
+              <h4>In Transit</h4>
+              <h2>{inTransitCount}</h2>
+            </div>
+            <div className="delivered-tile">
+              <h4>Delivered</h4>
+              <h2>{deliveredCount}</h2>
+            </div>
+            <div className="cancelled-tile">
+              <h4>Cancelled</h4>
+              <h2>{cancelledCount}</h2>
+            </div>
+          </div>
+
+
+        </section>
+        <section className="dashboard-layout">
+
+          <aside className="sidebar">
+            <h2>Active Shipments</h2>
+            <input 
+              id="shipment-search" 
+              name="search"
+              placeholder="Search shipments..." 
+              onChange={handleChange} 
+            />            
+            <ul> 
+              {(searchFoundResult || state.orders).map((inst) => (
+                <li 
+                  key={inst.id} 
+                  className={`sidebar-item ${state.activeId === inst.id ? 'active' : ''}`} 
+                  onClick={() => dispatch({ type: "SCREEN_UPDATE", payload: inst.id })}
+                >
+                <span className="sidebar-id">{inst.orderId} </span>
                 <span className="sidebar-customer">{inst.customer}</span>
-              </li>
-            ))}
-          </ul>
-        </aside>
-
-        <div className="customer-info">
-          {/* Top Card: Identity */}
-          <section className="card order-header">
-            <div className="order-id-group">
-              <label className="field-label">ORDER ID</label>
-              <h1 className="order-number">{currentState.orderId}</h1>
-            </div>
-            <span className={`status-badge status-${currentState.status.toLowerCase()}`}>
-              {currentState.status}
-            </span>
-          </section>
-
-          {/* Middle Card: Details */}
-          <section className="card details-grid">
-            <div className="detail-item">
-              <label className="field-label">Customer</label>
-              <p className="field-value">{currentState.customer}</p>
-            </div>
-            <div className="detail-item">
-              <label className="field-label">Location</label>
-              <p className="field-value">{currentState.location}</p>
-            </div>
-            <div className="detail-item">
-              <label className="field-label">Destination</label>
-              <p className="field-value">{currentState.destination}</p>
-            </div>
-          </section>
-
-          {/* Action Buttons */}
-          <section className="next-actions">
-            {currentState.button.map((btnName) => (
-              <button 
-                key={btnName} 
-                className="btn"
-                onClick={() => dispatch({ type: 'STATUS_CHANGE', payload: btnName })}
-              >
-                {btnName}
-              </button>
-            ))}
-            <button className="btn reset-btn" onClick={() => dispatch({ type: 'RESET', payload:currentState?.id})}>RESET</button>
-          </section>
-
-          {/* Bottom Card: Activity Log */}
-          <section className="card history-container">
-            <h3 className="section-title">Activity Log</h3>
-            <div className="history-list">
-              {currentState.history.map((entry, index) => (
-                <div key={index} className="history-item">
-                  <div className="history-time">{entry.time}</div>
-                  <div className="history-note">{entry.note}</div>
-                  <div className="history-type">{entry.type}</div>
-                </div>
+                </li>
               ))}
-            </div>
-          </section>
-        </div>
+            </ul>
+          </aside>
+
+          <div className="customer-info">
+            {/* Top Card: Identity */}
+            <section className="card order-header">
+              <div className="order-id-group">
+                <label className="field-label">ORDER ID</label>
+                <h1 className="order-number">{currentState.orderId}</h1>
+              </div>
+              <span className={`status-badge status-${currentState.status.toLowerCase()}`}>
+                {currentState.status}
+              </span>
+            </section>
+
+            {/* Middle Card: Details */}
+            <section className="card details-grid">
+              <div className="detail-item">
+                <label className="field-label">Customer</label>
+                <p className="field-value">{currentState.customer}</p>
+              </div>
+              <div className="detail-item">
+                <label className="field-label">Location</label>
+                <p className="field-value">{currentState.location}</p>
+              </div>
+              <div className="detail-item">
+                <label className="field-label">Destination</label>
+                <p className="field-value">{currentState.destination}</p>
+              </div>
+            </section>
+
+            {/* Action Buttons */}
+            <section className="next-actions">
+              {currentState.button.map((btnName) => (
+                <button 
+                  key={btnName} 
+                  className="btn"
+                  onClick={() => dispatch({ type: 'STATUS_CHANGE', payload: btnName })}
+                >
+                  {btnName}
+                </button>
+              ))}
+              <button className="btn reset-btn" onClick={() => dispatch({ type: 'RESET', payload:currentState?.id})}>RESET</button>
+            </section>
+
+            {/* Bottom Card: Activity Log */}
+            <section className="card history-container">
+              <h3 className="section-title">Activity Log</h3>
+              <div className="history-list">
+                {currentState.history.map((entry, index) => (
+                  <div key={index} className="history-item">
+                    <div className="history-time">{entry.time}</div>
+                    <div className="history-note">{entry.note}</div>
+                    <div className="history-type">{entry.type}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+        </section>
       </main>
+
     </div>
   );
 }
